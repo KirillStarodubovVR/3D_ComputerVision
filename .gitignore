@@ -1,0 +1,9 @@
+# folders to ignore
+lectures/
+
+camera_model_and_calibration/homework/images_calibration/
+camera_model_and_calibration/homework/images_calibration2/
+camera_model_and_calibration/homework/images_calibration3/
+
+# .xyz
+*.xyz
