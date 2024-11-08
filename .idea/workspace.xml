@@ -5,8 +5,11 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="8eb969c1-0dec-4f8f-902a-8ac87f082076" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/3D_ComputerVision.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/3D_ComputerVision.iml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/slam/my_3DCV_lecture4_hw.ipynb" beforeDir="false" afterPath="$PROJECT_DIR$/slam/my_3DCV_lecture4_hw.ipynb" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/slam2/features.py" beforeDir="false" afterPath="$PROJECT_DIR$/slam2/features.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/slam2/sfm.py" beforeDir="false" afterPath="$PROJECT_DIR$/slam2/sfm.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -29,12 +32,12 @@
     &quot;assignee&quot;: &quot;KirillStarodubovVR&quot;
   }
 }</component>
-  <component name="GithubPullRequestsUISettings">{
-  &quot;selectedUrlAndAccountId&quot;: {
-    &quot;url&quot;: &quot;https://github.com/KirillStarodubovVR/3D_ComputerVision.git&quot;,
-    &quot;accountId&quot;: &quot;5c4cbd8b-dd35-4b99-80c5-65f0374b19b5&quot;
+  <component name="GithubPullRequestsUISettings"><![CDATA[{
+  "selectedUrlAndAccountId": {
+    "url": "https://github.com/KirillStarodubovVR/3D_ComputerVision.git",
+    "accountId": "734c382b-cf30-4eed-8b4e-2fccc4d3dce3"
   }
-}</component>
+}]]></component>
   <component name="ProjectColorInfo">{
   &quot;associatedIndex&quot;: 5
 }</component>
@@ -52,7 +55,7 @@
     "Python.test.executor": "Run",
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "git-widget-placeholder": "master",
-    "last_opened_file_path": "C:/Users/SKG/GitHub/3D_ComputerVision",
+    "last_opened_file_path": "/home/skg/Projects/3D_ComputerVision",
     "settings.editor.selected.configurable": "com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable"
   }
 }]]></component>
@@ -156,7 +159,7 @@
   <component name="SharedIndexes">
     <attachedChunks>
       <set>
-        <option value="bundled-python-sdk-98f27166c754-ba05f1cad1b1-com.jetbrains.pycharm.community.sharedIndexes.bundled-PC-242.21829.153" />
+        <option value="bundled-python-sdk-0e3be3396995-c546a90a8094-com.jetbrains.pycharm.community.sharedIndexes.bundled-PC-242.23339.19" />
       </set>
     </attachedChunks>
   </component>
@@ -272,6 +275,10 @@
           <url>file://$PROJECT_DIR$/slam/slam.py</url>
           <line>329</line>
           <option name="timeStamp" value="20" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/slam2/ba.py</url>
+          <option name="timeStamp" value="21" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>

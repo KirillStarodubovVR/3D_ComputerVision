@@ -325,7 +325,182 @@ if __name__ == '__main__':
 
 # from ChatGPT
 """
-```python
+class SFM:
+    # Конструктор класса SFM, инициализирующий начальные данные
+    def __init__(self, features, matches, camera_model, reprojection_threshold):
+        # Сохраняем входные данные
+        self.features = features  # Признаки изображений
+        self.matches = matches  # Соответствия между изображениями
+        self.camera_model = camera_model  # Модель камеры
+        self.reprojection_threshold = reprojection_threshold  # Порог репроекции
+
+        # Инициализация сцены
+        self.poses = [None for _ in range(len(self.features))]  # Позиции камер
+        self.points = []  # Набор 3D-точек
+        self.observations = []  # Наблюдения 3D-точек
+        self.observations_lookup = {}  # Таблица соответствий для наблюдений
+        self.failed = False  # Флаг, сигнализирующий об ошибке в реконструкции
+
+    # Проверка завершения процесса реконструкции
+    def is_finished(self):
+        return self.failed or all([pose is not None for pose in self.poses])
+
+    # Находим пару изображений с наибольшим количеством соответствий для начальной инициализации
+    def find_initial_pair(self):
+        max_i, max_j = -1, -1
+        # TODO: Выберите пару изображений для начальной реконструкции
+        print(f"Initial pair: {max_i} {max_j}")
+        return max_i, max_j 
+
+    # Инициализация начальной пары изображений и построение 3D-точек
+    def initialize(self):
+        max_i, max_j = self.find_initial_pair()
+        T, points, kp_id1, kp_id2 = two_view_geometry(
+            self.features[max_i][0], self.features[max_j][0],
+            self.matches[max_i][max_j], self.reprojection_threshold)
+
+        self.poses[max_i] = np.eye(4)  # Положение первой камеры
+        self.poses[max_j] = T  # Положение второй камеры
+        self.points = points  # Инициализируем 3D-точки
+
+        # Добавляем наблюдения 3D-точек
+        self.observations = [[(max_i, i), (max_j, j)] for i, j in zip(kp_id1, kp_id2)]
+        
+        # Добавляем наблюдения в таблицу соответствий
+        for i, obs in enumerate(self.observations):
+            for j in obs:
+                self.observations_lookup[j] = i
+        print(f"Initialized with {len(points)} points")
+
+    # Сортируем виды по количеству наблюдений для 3D-точек
+    def sort_views(self):
+        views = []
+        # TODO: Вернуть список изображений по вероятности успешного добавления в сцену
+        views.sort(key=lambda x: x[1], reverse=True)
+        return views
+
+    # Добавляем новый вид (изображение) в сцену
+    def add_view(self, i):
+        print(f"Adding view {i}")
+        matches = set()
+        # TODO: Найти общие точки между изображением i и существующими точками
+
+        landmark_ids = [match[0] for match in matches]
+        descriptor_ids = [match[1] for match in matches]
+
+        # Проверка достаточности общих точек для построения вида
+        if len(landmark_ids) < 10:
+            print('Not enough points in common')
+            return False
+
+        # Позиционируем камеру для текущего изображения
+        T, landmark_ids, descriptor_ids = solve_pnp(
+            self.points, landmark_ids, self.features[i][0], descriptor_ids,
+            self.reprojection_threshold)
+        
+        if T is None:
+            print("Failed to add view")
+            return False
+
+        # Очищаем дескрипторы, сопоставленные с несколькими 3D-точками
+        descriptor_count = {d: descriptor_ids.count(d) for d in descriptor_ids}
+        landmark_ids = [landmark_ids[j] for j, d in enumerate(descriptor_ids) if descriptor_count[d] == 1]
+        descriptor_ids = [d for d in descriptor_ids if descriptor_count[d] == 1]
+
+        self.poses[i] = T  # Положение камеры
+
+        # Добавляем наблюдения
+        for l, d in zip(landmark_ids, descriptor_ids):
+            self.observations[l].append((i, d))
+            self.observations_lookup[(i, d)] = l
+
+        # Триангулируем новые точки для текущего вида
+        for j in range(len(self.features)):
+            if self.poses[j] is None or i == j:
+                continue
+            self.trinagulate_points(i, j)
+        print(f"Scene has {len(self.points)} points")
+
+        return True
+
+    # Триангулируем точки между двумя видами
+    def trinagulate_points(self, i, j):
+        matches = self.matches[i][j]
+        if len(matches) < 50:
+            return
+        descriptors_i, descriptors_j = [], []
+        
+        for match in matches:
+            if not self.observations_lookup.get((i, match[0])) and not self.observations_lookup.get((j, match[1])):
+                descriptors_i.append(match[0])
+                descriptors_j.append(match[1])
+
+        if len(descriptors_i) < 10:
+            return
+
+        points, inliers = triangulate_points(
+            descriptors_i, descriptors_j, self.poses[i], self.poses[j],
+            self.reprojection_threshold)
+
+        # Добавляем триангулированные точки в сцену
+        self.points = np.vstack((self.points, points[inliers]))
+        for d_i, d_j in zip(descriptors_i[inliers], descriptors_j[inliers]):
+            self.observations.append([(i, d_i), (j, d_j)])
+            self.observations_lookup[(i, d_i)] = len(self.observations) - 1
+            self.observations_lookup[(j, d_j)] = len(self.observations) - 1
+
+    # Добавляем следующий вид (изображение) в сцену
+    def add_next_view(self):
+        views = self.sort_views()
+        for view in views:
+            if self.add_view(view[0]):
+                return
+        print("Failed to add a view")
+        self.failed = True
+
+    # Визуализация сцены
+    def visualize(self):
+        draw_scene(self.poses, self.points, self.camera_model)
+
+    # Проверка на согласованность наблюдений
+    def check_observations_consisntency(self):
+        for i, obs in enumerate(self.observations):
+            for j in obs:
+                if self.observations_lookup.get(j) != i:
+                    return False
+        for i, obs in self.observations_lookup.items():
+            if i not in self.observations[obs]:
+                return False
+        return len(self.points) == len(self.observations)
+
+    # Корректировка с помощью bundle adjustment
+    def bundle_adjustment(self):
+        bundle_adjustment(self.poses, self.points, self.features, self.observations, self.reprojection_threshold)
+        self.filter_outliers()
+
+    # Фильтруем выбросы по репроекционной ошибке
+    def filter_outliers(self):
+        observations_deleted = 0
+        for i, obs in enumerate(self.observations):
+            for j in obs:
+                point = self.points[i]
+                pose = self.poses[j[0]]
+                point = pose @ np.hstack((point, 1))
+                point /= point[2]
+                error = np.linalg.norm(point[:2] - self.features[j[0]][0][j[1]])
+                if error > self.reprojection_threshold:
+                    self.observations_lookup.pop(j)
+                    self.observations[i].remove(j)
+                    observations_deleted += 1
+        print(f"Filtered {observations_deleted} observations")
+
+        # Удаляем точки с менее чем двумя наблюдениями
+        to_delete = {i for i, obs in enumerate(self.observations) if len(obs) < 2}
+        self.points = np.delete(self.points, list(to_delete), axis=0)
+        self.observations = [obs for i, obs in enumerate(self.observations) if i not in to_delete]
+
+
+
 import argparse  # Импорт argparse для работы с аргументами командной строки
 import os  # Модуль для работы с файловой системой
 import numpy as np  # Импортируем numpy для работы с массивами
@@ -417,5 +592,5 @@ if __name__ == '__main__':
             f.write(f"{point[0]} {point[1]} {point[2]}\n")
     
     sfm.visualize()  # Финальная визуализация
-```
+
 """

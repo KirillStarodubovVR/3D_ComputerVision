@@ -14,7 +14,7 @@ def extract_features(images, num_features):
     return np.array(features, dtype=object)
 
 def match_features(features):
-    #match features using flann, match each image to every other image
+    # match features using flann, match each image to every other image
     matches = []
     for i in tqdm(range(len(features)), desc='Matching features'):
         matches.append([])
@@ -36,7 +36,7 @@ def match_features(features):
     return np.array(matches, dtype=object)
 
 def cross_check(matches):
-    #cross check matches, only keep matches that are mutual
+    # cross-check matches, only keep matches that are mutual
 
     for i in range(len(matches)):
         for j in range(len(matches[i])):
