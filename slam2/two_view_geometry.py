@@ -2,74 +2,93 @@ import numpy as np
 import cv2
 
 def triangulate_points(points1, points2, T1, T2, reprojection_threshold=5e-3):
-    #triangulate using linear algebra
-    #construct linear system
-    points = np.zeros((points1.shape[0], 4))
-    A_r = T2[:2, :]
-    A_l = T1[:2, :]
-    A = np.vstack((A_l, A_r))
-    B = np.array([T1[2, :],
-        T1[2, :],
-        T2[2, :],
-        T2[2, :]])
+    # Триангулирует 3D-точки на основе соответствующих точек из двух видов с помощью линейной алгебры
+    # Инициализируем массив для хранения 3D-точек в виде однородных координат
+    points = np.zeros((points1.shape[0], 4))    # Каждая точка имеет 4 координаты (x, y, z, w)
+    # Подготовка матриц для решения системы уравнений
+    A_r = T2[:2, :] # Первая и вторая строки матрицы преобразования T2 (для второго вида)
+    A_l = T1[:2, :] # Первая и вторая строки матрицы преобразования T1 (для первого вида)
+    A = np.vstack((A_l, A_r))   # Объединяем строки A_l и A_r в одну матрицу A
+    # Создаем матрицу B из третьей строки T1 и T2, которая используется для построения системы уравнений
+    B = np.array([T1[2, :], T1[2, :], T2[2, :], T2[2, :]])
+    # Проходим по каждой паре соответствующих точек
     for i in range(len(points1)):
-        x1 = points1[i]
-        x2 = points2[i]
-        d = np.array([x1[0], x1[1], x2[0], x2[1]])
+        x1 = points1[i] # Координаты точки в первом виде
+        x2 = points2[i] # Координаты точки во втором виде
+        d = np.array([x1[0], x1[1], x2[0], x2[1]]) # Объединяем координаты x и y из обеих точек
+        # Формируем матрицу S для текущей пары точек
         S = A - np.diag(d) @ B
-        #find nullspace
+        # Находим решение уравнения с помощью SVD, где x — 3D-точка в однородных координатах
         _, _, V = np.linalg.svd(S)
-        x = V[-1]
-        x = x / x[3]
-        points[i] = x
+        x = V[-1]  # Берем последнюю строку V (решение)
+        x = x / x[3]  # Нормализуем точку, чтобы ее четвертая координата была равна 1
+        points[i] = x  # Сохраняем точку
 
-    #check reprojection error
-    points1_transformed = T1 @ points.T
-    points1_reprojected = points1_transformed / points1_transformed[2, :]
-    error1 = np.linalg.norm(points1_reprojected[:2, :].T - points1, axis=1)
+    # Проверяем ошибки репроекции
+    points1_transformed = T1 @ points.T # Преобразуем точки в систему первой камеры
+    points1_reprojected = points1_transformed / points1_transformed[2, :]   # Нормализуем по z-координате
+    error1 = np.linalg.norm(points1_reprojected[:2, :].T - points1, axis=1) # Ошибка репроекции в первом виде
 
-    points2_transformed = T2 @ points.T
-    points2_reprojected = points2_transformed / points2_transformed[2, :]
-    error2 = np.linalg.norm(points2_reprojected[:2, :].T - points2, axis=1)
-
+    points2_transformed = T2 @ points.T # Преобразуем точки в систему второй камеры
+    points2_reprojected = points2_transformed / points2_transformed[2, :]   # Нормализуем по z-координате
+    error2 = np.linalg.norm(points2_reprojected[:2, :].T - points2, axis=1) # Ошибка репроекции во втором виде
+    # Определяем инлиеры: точки с ошибкой репроекции, не превышающей заданный порог
     inliers = np.logical_and(error1 < reprojection_threshold, error2 < reprojection_threshold)
 
-    #check positive depth
+    # Проверяем, чтобы точки находились перед камерами (глубина положительна)
     inliers = np.logical_and(inliers, points1_transformed[2, :] > 0, points2_transformed[2, :] > 0)
 
-    #check points far from camera
+    # Проверяем, чтобы точки находились в разумном расстоянии от камеры
     inliers = np.logical_and(inliers, points1_transformed[2, :] < 50, points2_transformed[2, :] < 50)
+    # Возвращаем 3D-координаты точек (x, y, z) и массив инлиеров
     return points[:, :3], inliers > 0
 
 
 def two_view_geometry(keypoints1, keypoints2, matches, reprojection_threshold):
-    
-    points1 = np.array([keypoints1[match[0]] for match in matches])
-    points2 = np.array([keypoints2[match[1]] for match in matches])
-    keypoints_ids_1 = np.array([match[0] for match in matches])
-    keypoints_ids_2 = np.array([match[1] for match in matches])
+    """
+    Подготовка соответствующих точек для вычисления матрицы Essential,
+    до применения триангуляции для получения 3D-точек.
+    """
+    # Функция вычисляет геометрию между двумя видами на основе соответствий ключевых точек.
+    # Преобразуем соответствия в массивы координат ключевых точек для каждого изображения.
+    points1 = np.array([keypoints1[match[0]] for match in matches]) # Координаты точек в первом изображении
+    points2 = np.array([keypoints2[match[1]] for match in matches]) # Координаты точек во втором изображении
 
+    # Сохраняем индексы ключевых точек для каждого изображения
+    keypoints_ids_1 = np.array([match[0] for match in matches]) # Индексы ключевых точек в первом изображении
+    keypoints_ids_2 = np.array([match[1] for match in matches]) # Индексы ключевых точек во втором изображении
+
+    # Находим матрицу E (основная матрица) для двух изображений. Метод cv2.RANSAC
     E, mask = cv2.findEssentialMat(points1, points2, threshold=reprojection_threshold)
-    points1 = points1[mask.flatten() > 0]
-    points2 = points2[mask.flatten() > 0]
-    keypoints_ids_1 = keypoints_ids_1[mask.flatten() > 0]
-    keypoints_ids_2 = keypoints_ids_2[mask.flatten() > 0]
+    # Фильтруем точки на основании маски, полученной из cv2.findEssentialMat
+    points1 = points1[mask.flatten() > 0]   # Точки в первом изображении, прошедшие фильтр
+    points2 = points2[mask.flatten() > 0]   # Точки во втором изображении, прошедшие фильтр
+    keypoints_ids_1 = keypoints_ids_1[mask.flatten() > 0]  # Индексы ключевых точек первого изображения, прошедшие фильтр
+    keypoints_ids_2 = keypoints_ids_2[mask.flatten() > 0]  # Индексы ключевых точек второго изображения, прошедшие фильтр
 
-
+    # Извлекаем относительное вращение и трансляцию между двумя изображениями
+    # По факту мы знаем матрицу K но сейчас она нам не нужна
     _, R, t, mask = cv2.recoverPose(E, points1, points2)
-    T_c1_c0 = np.hstack((R, t))
-    T_c0_c1 = np.hstack((R.T, -R.T @ t))
+    # Формируем матрицу преобразования от камеры 1 к камере 0
+    T_c1_c0 = np.hstack((R, t))  # Матрица преобразования от камеры 0 к камере 1.
+    T_c0_c1 = np.hstack((R.T, -R.T @ t)) # Формируем матрицу обратного преобразования от камеры 1 к камере 2.
+    # Фильтруем точки на основе новой маски, полученной из recoverPose
+    # Оставляем только точки, прошедшие фильтрацию с новой маской
     points1 = points1[mask.flatten() > 0]
     points2 = points2[mask.flatten() > 0]
     keypoints_ids_1 = keypoints_ids_1[mask.flatten() > 0]
     keypoints_ids_2 = keypoints_ids_2[mask.flatten() > 0]
-    T = T_c1_c0
 
+    # Выбираем матрицу преобразования от камеры 0 к камере 1 для триангуляции
+    T = T_c1_c0 # матрица перехода от камеры 0 к камере 1
+    # Триангулируем 3D-точки на основе соответствующих точек из двух изображений
     points, inliers = triangulate_points(points1, points2, np.eye(4), T_c1_c0, reprojection_threshold)
 
-    points = points[inliers]
+    # Фильтруем только те 3D-точки, которые являются инлаиерами
+    points = points[inliers] # Оставляем только инлаиеры
     keypoints_ids_1 = keypoints_ids_1[inliers]
     keypoints_ids_2 = keypoints_ids_2[inliers]
+    # Возвращаем матрицу преобразования, 3D-точки и индексы ключевых точек, которые были сопоставлены
     return T_c1_c0, points, keypoints_ids_1, keypoints_ids_2
 
 
