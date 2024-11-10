@@ -4,11 +4,17 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="8eb969c1-0dec-4f8f-902a-8ac87f082076" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
+    <list default="true" id="8eb969c1-0dec-4f8f-902a-8ac87f082076" name="Changes" comment="update camera model.py with comments">
+      <change afterPath="$PROJECT_DIR$/slam2/data_plot.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/slam2/frame_extractor.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/3D_ComputerVision.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/3D_ComputerVision.iml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/slam2/features.py" beforeDir="false" afterPath="$PROJECT_DIR$/slam2/features.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/slam2/images.py" beforeDir="false" afterPath="$PROJECT_DIR$/slam2/images.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/slam2/sfm.py" beforeDir="false" afterPath="$PROJECT_DIR$/slam2/sfm.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/slam2/two_view_geometry.py" beforeDir="false" afterPath="$PROJECT_DIR$/slam2/two_view_geometry.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/slam2/visualize.py" beforeDir="false" afterPath="$PROJECT_DIR$/slam2/visualize.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -46,19 +52,43 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;Python.main.executor&quot;: &quot;Run&quot;,
-    &quot;Python.my_hw_2.executor&quot;: &quot;Debug&quot;,
-    &quot;Python.slam.executor&quot;: &quot;Debug&quot;,
-    &quot;Python.test.executor&quot;: &quot;Run&quot;,
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;master&quot;,
-    &quot;last_opened_file_path&quot;: &quot;/home/skg/Projects/3D_ComputerVision&quot;,
-    &quot;settings.editor.selected.configurable&quot;: &quot;com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "Python.frame_extractor.executor": "Run",
+    "Python.main.executor": "Run",
+    "Python.my_hw_2.executor": "Debug",
+    "Python.sfm_input_args.executor": "Debug",
+    "Python.slam.executor": "Debug",
+    "Python.test.executor": "Run",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "git-widget-placeholder": "master",
+    "last_opened_file_path": "/home/skg/Projects/3D_ComputerVision/slam2",
+    "settings.editor.selected.configurable": "preferences.pluginManager"
   }
-}</component>
-  <component name="RunManager" selected="Python.slam">
+}]]></component>
+  <component name="RunManager" selected="Python.sfm_input_args">
+    <configuration name="frame_extractor" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
+      <module name="3D_ComputerVision" />
+      <option name="ENV_FILES" value="" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/slam2" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/slam2/frame_extractor.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
     <configuration name="main" type="PythonConfigurationType" factoryName="Python" nameIsGenerated="true">
       <module name="3D_ComputerVision" />
       <option name="ENV_FILES" value="" />
@@ -96,6 +126,29 @@
       <option name="ADD_SOURCE_ROOTS" value="true" />
       <option name="SCRIPT_NAME" value="$PROJECT_DIR$/image_matching/homework/my_hw_2.py" />
       <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
+    <configuration name="sfm_input_args" type="PythonConfigurationType" factoryName="Python">
+      <module name="3D_ComputerVision" />
+      <option name="ENV_FILES" value="" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="SDK_NAME" value="Python 3.8 (cv_venv)" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/slam2" />
+      <option name="IS_MODULE_SDK" value="false" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/slam2/sfm.py" />
+      <option name="PARAMETERS" value="--input ./images/frames --camera_model &quot;SIMPLE_RADIAL 3072 2304 2559.68 1536 1152 -0.0204997&quot; --max_views -1 --resize_factor 1.0 --num_features 3000 --reprojection_threshold 1e-3 --ba_frequency 5 --vis_frequency 5" />
       <option name="SHOW_COMMAND_LINE" value="false" />
       <option name="EMULATE_TERMINAL" value="false" />
       <option name="MODULE_MODE" value="false" />
@@ -147,8 +200,17 @@
       <option name="INPUT_FILE" value="" />
       <method v="2" />
     </configuration>
+    <list>
+      <item itemvalue="Python.main" />
+      <item itemvalue="Python.sfm_input_args" />
+      <item itemvalue="Python.frame_extractor" />
+      <item itemvalue="Python.my_hw_2" />
+      <item itemvalue="Python.slam" />
+      <item itemvalue="Python.test" />
+    </list>
     <recent_temporary>
       <list>
+        <item itemvalue="Python.frame_extractor" />
         <item itemvalue="Python.slam" />
         <item itemvalue="Python.my_hw_2" />
         <item itemvalue="Python.test" />
@@ -158,7 +220,7 @@
   <component name="SharedIndexes">
     <attachedChunks>
       <set>
-        <option value="bundled-python-sdk-0e3be3396995-c546a90a8094-com.jetbrains.pycharm.community.sharedIndexes.bundled-PC-242.23339.19" />
+        <option value="bundled-python-sdk-d7ad00fb9fc3-c546a90a8094-com.jetbrains.pycharm.community.sharedIndexes.bundled-PC-242.23726.102" />
       </set>
     </attachedChunks>
   </component>
@@ -219,7 +281,15 @@
       <option name="project" value="LOCAL" />
       <updated>1730803366480</updated>
     </task>
-    <option name="localTasksCounter" value="7" />
+    <task id="LOCAL-00007" summary="update camera model.py with comments">
+      <option name="closed" value="true" />
+      <created>1731099319726</created>
+      <option name="number" value="00007" />
+      <option name="presentableId" value="LOCAL-00007" />
+      <option name="project" value="LOCAL" />
+      <updated>1731099319726</updated>
+    </task>
+    <option name="localTasksCounter" value="8" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -240,56 +310,35 @@
     <MESSAGE value="finish homework" />
     <MESSAGE value="added scaling of keypoint coordinates" />
     <MESSAGE value="update third homework" />
-    <option name="LAST_COMMIT_MESSAGE" value="update third homework" />
+    <MESSAGE value="update camera model.py with comments" />
+    <option name="LAST_COMMIT_MESSAGE" value="update camera model.py with comments" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
       <breakpoints>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/image_matching/homework/my_hw_2.py</url>
-          <line>374</line>
-          <option name="timeStamp" value="1" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/slam/slam.py</url>
-          <line>563</line>
-          <option name="timeStamp" value="13" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/slam/slam.py</url>
-          <line>465</line>
-          <option name="timeStamp" value="14" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/slam/slam.py</url>
-          <line>475</line>
-          <option name="timeStamp" value="17" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/slam/slam.py</url>
-          <line>553</line>
-          <option name="timeStamp" value="18" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/slam/slam.py</url>
-          <line>329</line>
-          <option name="timeStamp" value="20" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/slam2/ba.py</url>
-          <option name="timeStamp" value="21" />
+          <url>file://$PROJECT_DIR$/slam2/sfm.py</url>
+          <line>260</line>
+          <option name="timeStamp" value="52" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/slam2/sfm.py</url>
-          <option name="timeStamp" value="22" />
+          <line>132</line>
+          <option name="timeStamp" value="58" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/slam2/sfm.py</url>
+          <line>121</line>
+          <option name="timeStamp" value="59" />
         </line-breakpoint>
       </breakpoints>
+      <breakpoints-dialog>
+        <breakpoints-dialog>
+          <selected-grouping-rules>
+            <grouping-rule id="by-file" />
+          </selected-grouping-rules>
+        </breakpoints-dialog>
+      </breakpoints-dialog>
     </breakpoint-manager>
-    <watches-manager>
-      <configuration name="PythonConfigurationType">
-        <watch expression="conners" />
-        <watch expression="pts1" />
-      </configuration>
-    </watches-manager>
   </component>
 </project>
