@@ -416,8 +416,8 @@ if __name__ == '__main__':
         features = np.load('features.npy', allow_pickle=True)
 
     if args.recalculate:
-        matches = match_features(features)
-        matches = cross_check(matches)
+        matches = match_features(features) # with base features.py
+        matches = cross_check(matches) # with base features.py
         np.save('matches.npy', matches, allow_pickle=True)
     else:
         print("Loading matches...")
