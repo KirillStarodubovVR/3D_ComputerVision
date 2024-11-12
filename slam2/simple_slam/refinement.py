@@ -22,10 +22,27 @@ def optimize_poses_and_points(poses, map_points, K, observability_graph):
     graph.add(gtsam.PriorFactorPose3(gtsam.symbol('p', 0), fixedPose, priorNoise))
 
     
+    # for point_index, observations in observability_graph.items():
+    #     landmark_key = gtsam.symbol('l', point_index)
+    #     # TODO: добавьте констрейнты для репроекций
+    #     # см. GenericProjectionFactorCal3_S2
+
+    # Добавляем репроекционные констрейнты для каждой точки карты
     for point_index, observations in observability_graph.items():
         landmark_key = gtsam.symbol('l', point_index)
-        # TODO: добавьте констрейнты для репроекций
-        # см. GenericProjectionFactorCal3_S2
+        point_3D = map_points[point_index]
+        initial_estimate.insert(landmark_key, gtsam.Point3(point_3D))
+
+        # Для каждого наблюдения этой 3D-точки в разных кадрах
+        for frame_id, point_2D in observations.items():
+            pose_key = gtsam.symbol('p', frame_id)
+            measurement = gtsam.Point2(point_2D[0], point_2D[1])
+
+            # Добавляем фактор репроекции с использованием GenericProjectionFactorCal3_S2
+            factor = gtsam.GenericProjectionFactorCal3_S2(
+                measurement, projection_noise, pose_key, landmark_key, K_gtsam
+            )
+            graph.add(factor)
 
     print ("====refinement=====")
 

@@ -1,1 +1,1 @@
-Namespace(ba_frequency=5, camera_model='SIMPLE_RADIAL 3072 2304 2559.68 1536 1152 -0.0204997', input='./images/frames', max_views=-1, num_features=3000, recalculate=False, reprojection_threshold=0.001, resize_factor=1.0, shuffle=False, vis_frequency=5)
+Namespace(ba_frequency=10, camera_model='SIMPLE_RADIAL 3072 2304 2559.68 1536 1152 -0.0204997', input='./images/south_building/images', max_views=-1, num_features=10000, recalculate=False, reprojection_threshold=0.001, resize_factor=1.0, shuffle=False, vis_frequency=50)

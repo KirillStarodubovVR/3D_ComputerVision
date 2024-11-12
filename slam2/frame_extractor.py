@@ -40,6 +40,6 @@ video_path = "/home/skg/Projects/3D_ComputerVision/slam2/images/images.mkv"
 # Укажите папку для сохранения кадров
 output_folder = "/home/skg/Projects/3D_ComputerVision/slam2/images/frames"
 # Извлекать каждый кадр или каждый n-й кадр (например, каждый пятый)
-every_n_frame = 5
+every_n_frame = 1
 
 extract_frames(video_path, output_folder, every_n_frame)
