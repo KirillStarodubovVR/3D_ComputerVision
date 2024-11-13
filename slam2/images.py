@@ -30,13 +30,23 @@ def load_images(files, resize_factor=1.0):
     # Загружаем каждое изображение и отображаем прогресс
     for file in tqdm(files, desc='Loading images'):
         # Читаем изображение из файла и добавляем его в список
-        images.append(cv2.imread(file))
+        image = cv2.imread(file)
+        if resize_factor != 1.0:
+            image = cv2.resize(image,
+                               (int(image.shape[1] * resize_factor),
+                                int(image.shape[0] * resize_factor))
+                               )
+
+        images.append(image)
+
+
     # Если коэффициент изменения размера не равен 1.0, изменяем размер изображений
-    if resize_factor != 1.0:
-        images = [cv2.resize(image,
-                             (int(image.shape[1] * resize_factor),
-                              int(image.shape[0] * resize_factor))
-                             )
-                  for image in images]
+    # if resize_factor != 1.0:
+    #     images = [cv2.resize(image,
+    #                          (int(image.shape[1] * resize_factor),
+    #                           int(image.shape[0] * resize_factor))
+    #                          )
+    #               for image in images]
+
     # Возвращаем список изображений
     return images

@@ -96,6 +96,7 @@ class OpenCVCameraModel:
         r2 = np.sum(points2d ** 2, axis=1)
         radial = 1 / (1 + self.distortion_coefficients[0] * r2 + self.distortion_coefficients[1] * r2 ** 2 +
                       self.distortion_coefficients[4] * r2 ** 3)
+
         undistorted = points2d * radial[:, None]
 
         # Homogeneous coordinates for 3D

@@ -4,15 +4,14 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="8eb969c1-0dec-4f8f-902a-8ac87f082076" name="Changes" comment="finished main part of hw">
+    <list default="true" id="8eb969c1-0dec-4f8f-902a-8ac87f082076" name="Changes" comment="Updated Feature Extraction without OPENCV camera model">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/slam2/args.txt" beforeDir="false" afterPath="$PROJECT_DIR$/slam2/args.txt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/slam2/camera_model.py" beforeDir="false" afterPath="$PROJECT_DIR$/slam2/camera_model.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/slam2/features_frame.py" beforeDir="false" afterPath="$PROJECT_DIR$/slam2/features_frame.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/slam2/image_names.txt" beforeDir="false" afterPath="$PROJECT_DIR$/slam2/image_names.txt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/slam2/images.py" beforeDir="false" afterPath="$PROJECT_DIR$/slam2/images.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/slam2/sfm.py" beforeDir="false" afterPath="$PROJECT_DIR$/slam2/sfm.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/slam2/simple_slam/simple_slam.py" beforeDir="false" afterPath="$PROJECT_DIR$/slam2/simple_slam/simple_slam.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/slam2/sfm-1.zip" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/slam2/simple_slam/triangulation.py" beforeDir="false" afterPath="$PROJECT_DIR$/slam2/simple_slam/triangulation.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -58,7 +57,7 @@
     "Python.frame_extractor.executor": "Run",
     "Python.main.executor": "Run",
     "Python.my_hw_2.executor": "Debug",
-    "Python.sfm_input_args.executor": "Run",
+    "Python.sfm_input_args.executor": "Debug",
     "Python.slam.executor": "Debug",
     "Python.test.executor": "Run",
     "RunOnceActivity.ShowReadmeOnStart": "true",
@@ -193,7 +192,7 @@
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
       <option name="SCRIPT_NAME" value="$PROJECT_DIR$/slam2/sfm.py" />
-      <option name="PARAMETERS" value="--input ./images/south_building/images --camera_model &quot;SIMPLE_RADIAL 3072 2304 2559.68 1536 1152 -0.0204997&quot; --max_views -1 --resize_factor 1 --num_features 10000 --reprojection_threshold 1e-3 --ba_frequency 5 --vis_frequency 50" />
+      <option name="PARAMETERS" value="--input ./images/person_hall/images --camera_model &quot;OPENCV 5616 3744 3839.71 3840.23 2808 1872 -0.109344 0.0790394 0.000101365 0.000233581 0.0&quot; --max_views -1 --resize_factor 0.5 --num_features 10000 --reprojection_threshold 1e-3 --ba_frequency 10 --vis_frequency 30" />
       <option name="SHOW_COMMAND_LINE" value="false" />
       <option name="EMULATE_TERMINAL" value="false" />
       <option name="MODULE_MODE" value="false" />
@@ -346,7 +345,15 @@
       <option name="project" value="LOCAL" />
       <updated>1731444084045</updated>
     </task>
-    <option name="localTasksCounter" value="12" />
+    <task id="LOCAL-00012" summary="Updated Feature Extraction without OPENCV camera model">
+      <option name="closed" value="true" />
+      <created>1731511692093</created>
+      <option name="number" value="00012" />
+      <option name="presentableId" value="LOCAL-00012" />
+      <option name="project" value="LOCAL" />
+      <updated>1731511692093</updated>
+    </task>
+    <option name="localTasksCounter" value="13" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -370,7 +377,8 @@
     <MESSAGE value="update camera model.py with comments" />
     <MESSAGE value="update commit" />
     <MESSAGE value="finished main part of hw" />
-    <option name="LAST_COMMIT_MESSAGE" value="finished main part of hw" />
+    <MESSAGE value="Updated Feature Extraction without OPENCV camera model" />
+    <option name="LAST_COMMIT_MESSAGE" value="Updated Feature Extraction without OPENCV camera model" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -381,16 +389,15 @@
           <option name="timeStamp" value="111" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <condition expression="len(self.matches[i,j])&lt;50" language="Python" />
-          <url>file://$PROJECT_DIR$/slam2/sfm.py</url>
-          <line>231</line>
-          <option name="timeStamp" value="128" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <condition expression="i==76" language="Python" />
           <url>file://$PROJECT_DIR$/slam2/sfm.py</url>
           <line>158</line>
           <option name="timeStamp" value="129" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/slam2/two_view_geometry.py</url>
+          <line>53</line>
+          <option name="timeStamp" value="133" />
         </line-breakpoint>
       </breakpoints>
       <breakpoints-dialog>
