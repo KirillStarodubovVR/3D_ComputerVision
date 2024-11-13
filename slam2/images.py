@@ -6,11 +6,13 @@ import cv2
 import re # new
 
 # Функция для получения списка путей к файлам изображений в указанной директории
-def get_image_files(dir, max_views=-1, shuffle=False):
+def get_image_files(dir, max_views=-1, shuffle=False, sort=True):
     # Находим все файлы с расширением '.JPG' в директории и создаем список их путей
     files = [os.path.join(dir, f) for f in os.listdir(dir) if f.endswith('.JPG')]
-    # Упорядочивание кадров для исследования корреляций между кадрами
-    # files = sorted(files, key=lambda x: int(re.search(r'frame_(\d+)', x).group(1))) # delete
+    if sort:
+        # Упорядочивание кадров для исследования корреляций между кадрами
+        # files = sorted(files, key=lambda x: int(re.search(r'frame_(\d+)', x).group(1))) # delete
+        files.sort()
 
     # Если установлен флаг shuffle, перемешиваем список случайным образом
     if shuffle:

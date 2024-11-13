@@ -5,13 +5,14 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="8eb969c1-0dec-4f8f-902a-8ac87f082076" name="Changes" comment="finished main part of hw">
-      <change afterPath="$PROJECT_DIR$/slam2/features_custom.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/slam2/features_frame.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/slam2/args.txt" beforeDir="false" afterPath="$PROJECT_DIR$/slam2/args.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/slam2/data_plot/find_initial_pair.png" beforeDir="false" afterPath="$PROJECT_DIR$/slam2/data_plot/find_initial_pair.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/slam2/camera_model.py" beforeDir="false" afterPath="$PROJECT_DIR$/slam2/camera_model.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/slam2/features_frame.py" beforeDir="false" afterPath="$PROJECT_DIR$/slam2/features_frame.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/slam2/image_names.txt" beforeDir="false" afterPath="$PROJECT_DIR$/slam2/image_names.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/slam2/images.py" beforeDir="false" afterPath="$PROJECT_DIR$/slam2/images.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/slam2/sfm.py" beforeDir="false" afterPath="$PROJECT_DIR$/slam2/sfm.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/slam2/simple_slam/simple_slam.py" beforeDir="false" afterPath="$PROJECT_DIR$/slam2/simple_slam/simple_slam.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -66,7 +67,7 @@
     "settings.editor.selected.configurable": "preferences.pluginManager"
   }
 }]]></component>
-  <component name="RunManager" selected="Python.test">
+  <component name="RunManager" selected="Python.sfm_input_args">
     <configuration name="ba" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
       <module name="3D_ComputerVision" />
       <option name="ENV_FILES" value="" />
@@ -192,7 +193,7 @@
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
       <option name="SCRIPT_NAME" value="$PROJECT_DIR$/slam2/sfm.py" />
-      <option name="PARAMETERS" value="--input ./images/south_building/images --camera_model &quot;SIMPLE_RADIAL 3072 2304 2559.68 1536 1152 -0.0204997&quot; --max_views 40 --resize_factor 1 --num_features 10000 --reprojection_threshold 1e-3 --ba_frequency 5 --vis_frequency 10" />
+      <option name="PARAMETERS" value="--input ./images/south_building/images --camera_model &quot;SIMPLE_RADIAL 3072 2304 2559.68 1536 1152 -0.0204997&quot; --max_views -1 --resize_factor 1 --num_features 10000 --reprojection_threshold 1e-3 --ba_frequency 5 --vis_frequency 50" />
       <option name="SHOW_COMMAND_LINE" value="false" />
       <option name="EMULATE_TERMINAL" value="false" />
       <option name="MODULE_MODE" value="false" />
@@ -337,7 +338,15 @@
       <option name="project" value="LOCAL" />
       <updated>1731419685517</updated>
     </task>
-    <option name="localTasksCounter" value="11" />
+    <task id="LOCAL-00011" summary="finished main part of hw">
+      <option name="closed" value="true" />
+      <created>1731444084045</created>
+      <option name="number" value="00011" />
+      <option name="presentableId" value="LOCAL-00011" />
+      <option name="project" value="LOCAL" />
+      <updated>1731444084045</updated>
+    </task>
+    <option name="localTasksCounter" value="12" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -365,6 +374,25 @@
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
+      <breakpoints>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/slam2/test.py</url>
+          <line>13</line>
+          <option name="timeStamp" value="111" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <condition expression="len(self.matches[i,j])&lt;50" language="Python" />
+          <url>file://$PROJECT_DIR$/slam2/sfm.py</url>
+          <line>231</line>
+          <option name="timeStamp" value="128" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <condition expression="i==76" language="Python" />
+          <url>file://$PROJECT_DIR$/slam2/sfm.py</url>
+          <line>158</line>
+          <option name="timeStamp" value="129" />
+        </line-breakpoint>
+      </breakpoints>
       <breakpoints-dialog>
         <breakpoints-dialog>
           <selected-grouping-rules>
@@ -372,6 +400,13 @@
           </selected-grouping-rules>
         </breakpoints-dialog>
       </breakpoints-dialog>
+      <default-breakpoints>
+        <breakpoint type="python-exception">
+          <properties notifyOnTerminate="true" exception="BaseException">
+            <option name="notifyOnTerminate" value="true" />
+          </properties>
+        </breakpoint>
+      </default-breakpoints>
     </breakpoint-manager>
   </component>
 </project>

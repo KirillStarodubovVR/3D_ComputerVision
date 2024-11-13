@@ -53,6 +53,59 @@ class RadialCameraModel:
             self.size, self.focal_length, self.principal_point, self.distortion_coefficients)
 
 
+class OpenCVCameraModel:
+    def __init__(self, size, focal_length, principal_point, distortion_coefficients):
+        # Initialize the camera model with specified parameters
+        self.size = size  # Image size in pixels (width, height)
+        self.focal_length = focal_length  # Focal lengths [fx, fy]
+        self.principal_point = principal_point  # Principal point [cx, cy]
+        self.distortion_coefficients = distortion_coefficients  # Distortion coefficients [k1, k2, p1, p2, k3]
+
+    def resize(self, factor):
+        # Scale the camera parameters by a specified factor
+        self.size = (self.size * factor).astype(int)
+        self.focal_length *= factor
+        self.principal_point *= factor
+
+    def project(self, points3d):
+        # Check if points are in front of the camera (z > 0)
+        valid = points3d[:, 2] > 0
+        uv = np.zeros_like(points3d[:, :2])
+        uv[valid] = points3d[:, :2][valid] / points3d[valid, 2][:, None]  # Normalize points
+
+        # Apply distortion using OpenCV model
+        r2 = np.sum(uv ** 2, axis=1)
+        radial = 1 + self.distortion_coefficients[0] * r2 + \
+                 self.distortion_coefficients[1] * r2 ** 2 + \
+                 self.distortion_coefficients[4] * r2 ** 3
+        uv[:, 0] += 2 * self.distortion_coefficients[2] * uv[:, 0] * uv[:, 1] + self.distortion_coefficients[3] * (
+                    r2 + 2 * uv[:, 0] ** 2)
+        uv[:, 1] += 2 * self.distortion_coefficients[3] * uv[:, 0] * uv[:, 1] + self.distortion_coefficients[2] * (
+                    r2 + 2 * uv[:, 1] ** 2)
+        uv *= radial[:, None]
+
+        # Convert to pixel coordinates
+        return uv * self.focal_length + self.principal_point
+
+    def unproject(self, points2d):
+        # Shift points by principal point
+        points2d = points2d - self.principal_point
+        # Normalize to the focal plane
+        points2d /= self.focal_length
+        # Estimate radial distortion to remove it (approximate iterative method may be needed for complex cases)
+        r2 = np.sum(points2d ** 2, axis=1)
+        radial = 1 / (1 + self.distortion_coefficients[0] * r2 + self.distortion_coefficients[1] * r2 ** 2 +
+                      self.distortion_coefficients[4] * r2 ** 3)
+        undistorted = points2d * radial[:, None]
+
+        # Homogeneous coordinates for 3D
+        hom = np.hstack((undistorted, np.ones((undistorted.shape[0], 1))))
+        return hom
+
+    def __str__(self):
+        return 'OpenCVCameraModel(size={}, focal_length={}, principal_point={}, distortion_coefficients={})'.format(
+            self.size, self.focal_length, self.principal_point, self.distortion_coefficients)
+
 def parse_camera_model(text):
     # Функция для разбора текстового представления модели камеры и создания объекта RadialCameraModel
     # Разделяем строку на компоненты
@@ -71,6 +124,14 @@ def parse_camera_model(text):
         distortion_coefficients = float(parts[6])
         # Создаем и возвращаем объект RadialCameraModel с заданными параметрами
         return RadialCameraModel(size, focal_length, principal_point, distortion_coefficients)
+
+    elif model == 'OPENCV':
+        size = np.array([int(parts[1]), int(parts[2])])
+        focal_length = np.array([float(parts[3]), float(parts[4])])
+        principal_point = np.array([float(parts[5]), float(parts[6])])
+        distortion_coefficients = np.array([float(parts[7]), float(parts[8]), float(parts[9]), float(parts[10]), float(parts[11])])
+        return OpenCVCameraModel(size, focal_length, principal_point, distortion_coefficients)
+
     else:
         # Если модель неизвестна, вызываем ошибку
         raise ValueError('Unknown camera model: {}'.format(model))

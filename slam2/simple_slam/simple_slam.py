@@ -100,12 +100,14 @@ def update_map(frame, last_frame, map_points, active_points, map_des, K, observa
 
 
 def simple_slam(video_file, K):
+    # Открываем видео и начинаем читать его
     cap = cv2.VideoCapture(video_file)
-    # for i in range(270):
-    #     cap.read()
+    # Берём первый кадр
     _, frame1 = cap.read()
+    # пропускаем 3 кадра
     for i in range(3):
         cap.read()
+    # Берём пятый (1+3)->5 кадр
     _, frame2 = cap.read()
 
     poses, map_points, map_des, observability_graph = initialize_map(frame1, frame2, K)

@@ -5,7 +5,8 @@ import numpy as np
 
 from camera_model import parse_camera_model
 from images import get_image_files, load_images
-from features import extract_features, match_features, cross_check
+# from features import extract_features, match_features, cross_check
+from features_frame import extract_features, match_features, cross_check
 from two_view_geometry import two_view_geometry, triangulate_points
 from visualize import *
 from pnp import solve_pnp
@@ -48,19 +49,21 @@ class SFM:
         # Находим пару изображений с наибольшим количеством соответствий для начальной инициализации
         max_i = -1
         max_j = -1
-        find_initial_pair_plot(self.matches)
+        # find_initial_pair_plot(self.matches)
         #TODO: Выберите пару изображений с которой вы хотите начать реконструкцию.
         # Верните индексы этих изображений
         total_num = 0
         for i in range(self.matches.shape[0]):
             for j in range(self.matches.shape[1]):
-                if i != j:
+                # if i != j:
+                if matches[i, j] is not None:
                     # Подразумевается что между одинаковыми кадрами нет общих точек
                     cur_num = len(matches[i, j])
                     if cur_num > total_num:
                         total_num = cur_num
                         max_i = i
                         max_j = j
+
         print(f"Инициализированы изображения с индексами: {max_i} {max_j}")
         print(f"Отобраны по критерию большего значения совместных точек")
         return max_i, max_j
@@ -103,11 +106,16 @@ class SFM:
         # Преобразуем данные в таблицу
         for i in range(matches.shape[0]):
             for j in range(i, matches.shape[1]):
-                if i != j:
+                if matches[i, j] is not None:
                     data[i, j] = len(matches[i, j])
-                    data_for_sort.append((i, j, data[i, j]))
+                    if data[i,j] > 50:
+                        data_for_sort.append((i, j, data[i, j]))
+                # else:
+                #     data_for_sort.append((i, j, 0)) # exclude from array?
+        # views = [(i, len(matches[i,i+1])) for i in range(2, len(self.poses)-1)]
 
-        data_for_sort = sorted(data_for_sort, key=lambda  x: x[2], reverse=True)
+
+        data_for_sort = sorted(data_for_sort, key=lambda  x: x[1], reverse=False)
 
         available_images = list(range(len(self.poses)))
         # available_images = np.arange(len(self.poses))
@@ -145,15 +153,15 @@ class SFM:
         # Matches - это множество кортежей (landmark_id, descriptor_id), где:
         # - landmark_id: индекс 3D-точки в self.points
         # - descriptor_id: индекс ключевой точки в изображении i
-        for j in range(len(self.poses)):
-            if i == j or self.poses[j] is None:
-                continue
-            # найти все точки между j-м и i-м изображениями.
+
+        start = i - 10
+        end = i + 10 + 1
+        frame_indecies = [j % len(self.poses) for j in range(start, end) if j != i]
+        # for j in range(len(self.poses)):
+        for j in frame_indecies:
+
+            # найти все точки между j-м и i-м изображениями. J сопоставлены с I
             matches_ji = self.matches[j,i]
-            # detect indecies which are on the scene from image j
-            # pts_ind_j_image = [pt_ind for pts_pair in self.observations for (im, pt_ind) in pts_pair if im == j]
-            # After we should sort indecies to find pts from image i which are the same with the image j
-            # pts_ind_i_image = [(pt_j, pt_i) for (pt_j, pt_i) in matches_ji if pt_j in pts_ind_j_image]
 
             for match_ji in matches_ji:
                 ind_j, ind_i = match_ji
@@ -201,14 +209,15 @@ class SFM:
         for l, d in zip(landmark_ids, descriptor_ids):
             assert(len(self.observations) > l)  # Убеждаемся, что индекс l существует в observations
             self.observations[l].append((i, d))  # Добавляем наблюдение для 3D-точки
-            assert self.observations_lookup.get((i, d)) is None, (i, d)  # Добавляем наблюдение для 3D-точки
+            # assert self.observations_lookup.get((i, d)) is None, (i, d)
             self.observations_lookup[(i, d)] = l  # Обновляем observations_lookup для быстрого доступа
         
         assert(self.check_observations_consisntency()) # Проверка целостности наблюдений
 
         # Триангулируем новые точки для текущего вида, сравнивая его с другими
-        for j in range(len(self.features)):
-            if self.poses[j] is None or i == j:
+        # for j in range(len(self.features)):
+        for j in frame_indecies:
+            if self.poses[j] is None:
                 continue  # Пропускаем, если для изображения j нет позы или оно совпадает с i
             self.trinagulate_points(i, j)  # Триангулируем между изображениями i и j
             assert(self.check_observations_consisntency())  # Проверяем целостность наблюдений после триангуляции
