@@ -36,7 +36,17 @@ def update_map(frame, last_frame, map_points, active_points, map_des, K, observa
     kp, des = sift.detectAndCompute(frame, None)
     flann = cv2.FlannBasedMatcher(dict(algorithm=0, trees=5), dict(checks=50))
     matches = flann.knnMatch(des, map_des[active_points], k=2)
-    #TODO: чтобы пройти поворот, попробуйте матчить точки только в окрестости
+    # TODO: чтобы пройти поворот, попробуйте матчить точки только в окрестости.
+    # Фильтруем точки на основе локальной области для улучшения соответствия
+    good_matches = []
+    for m1, m2 in matches:
+        # Проверяем, что расстояние соответствует локальным требованиям ORB SLAM
+        if m1.distance < 0.5 * m2.distance:
+            query_pt = kp[m1.queryIdx].pt
+            map_pt = map_points[active_points[m1.trainIdx]]
+            # Добавляем проверку окрестности
+            if np.linalg.norm(query_pt - map_pt[:2]) < 50:  # ограничиваем расстояние (например, 50 пикселей)
+                good_matches.append(m1)
     #детекта на последнем кадре (см. ORB SLAM)
     good_matches = [m1 for m1, m2 in matches if m1.distance < 0.5 * m2.distance]
     obj_pts = np.float32([map_points[active_points[m.trainIdx]] for m in good_matches])
@@ -90,12 +100,14 @@ def update_map(frame, last_frame, map_points, active_points, map_des, K, observa
 
 
 def simple_slam(video_file, K):
+    # Открываем видео и начинаем читать его
     cap = cv2.VideoCapture(video_file)
-    # for i in range(270):
-    #     cap.read()
+    # Берём первый кадр
     _, frame1 = cap.read()
+    # пропускаем 3 кадра
     for i in range(3):
         cap.read()
+    # Берём пятый (1+3)->5 кадр
     _, frame2 = cap.read()
 
     poses, map_points, map_des, observability_graph = initialize_map(frame1, frame2, K)

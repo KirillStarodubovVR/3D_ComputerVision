@@ -20,24 +20,32 @@ def extract_features(images, num_features):
     # Возвращаем массив признаков
     return np.array(features, dtype=object)
 
-def match_features(features):
+def match_features(features, frame=10):
     # Функция для сопоставления признаков между всеми изображениями
     # Инициализируем список для хранения совпадений
+    # matches = [[[] for _ in range(len(features))] for _ in range(len(features))]
     matches = []
+    num_images = len(features)
     # Проходим по всем комбинациям изображений, отображая прогресс
-    for i in tqdm(range(len(features)), desc='Matching features'):
+    for i in tqdm(range(num_images), desc='Matching features'):
         # Создаем пустой список для совпадений с текущим изображением
         matches.append([])
+
+        # Задаём границы окна
+        start = i - frame
+        end = i + frame + 1
+
         # Сравниваем текущее изображение со всеми другими изображениями
-        for j in range(len(features)):
+        for j in range(num_images):
+            frame_indecies = [i%num_images for i in range(start,end)]
             # Если изображение сравнивается с самим собой, добавляем None
-            if i == j:
+            if i==j or (j not in frame_indecies):
                 matches[i].append(None)
                 continue
             # Создаем объект для сопоставления признаков методом FLANN
             matcher = cv2.FlannBasedMatcher_create()
             # Находим совпадения с помощью метода k-ближайших соседей (k=2)
-            m = matcher.knnMatch(features[i][1], features[j][1], k=2)
+            m = matcher.knnMatch(features[i][1], features[j%num_images][1], k=2)
             # Список для хороших совпадений
             good = []
             # Фильтруем совпадения с использованием условия Lowe's ratio test

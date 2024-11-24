@@ -5,7 +5,8 @@ import numpy as np
 
 from camera_model import parse_camera_model
 from images import get_image_files, load_images
-from features import extract_features, match_features, cross_check
+# from features import extract_features, match_features, cross_check
+from features_frame import extract_features, match_features, cross_check
 from two_view_geometry import two_view_geometry, triangulate_points
 from visualize import *
 from pnp import solve_pnp
@@ -48,19 +49,21 @@ class SFM:
         # Находим пару изображений с наибольшим количеством соответствий для начальной инициализации
         max_i = -1
         max_j = -1
-        find_initial_pair_plot(self.matches)
+        # find_initial_pair_plot(self.matches)
         #TODO: Выберите пару изображений с которой вы хотите начать реконструкцию.
         # Верните индексы этих изображений
         total_num = 0
         for i in range(self.matches.shape[0]):
             for j in range(self.matches.shape[1]):
-                if i != j:
+                # if i != j:
+                if matches[i, j] is not None:
                     # Подразумевается что между одинаковыми кадрами нет общих точек
                     cur_num = len(matches[i, j])
                     if cur_num > total_num:
                         total_num = cur_num
                         max_i = i
                         max_j = j
+
         print(f"Инициализированы изображения с индексами: {max_i} {max_j}")
         print(f"Отобраны по критерию большего значения совместных точек")
         return max_i, max_j
@@ -103,11 +106,16 @@ class SFM:
         # Преобразуем данные в таблицу
         for i in range(matches.shape[0]):
             for j in range(i, matches.shape[1]):
-                if i != j:
+                if matches[i, j] is not None:
                     data[i, j] = len(matches[i, j])
-                    data_for_sort.append((i, j, data[i, j]))
+                    if data[i,j] > 50:
+                        data_for_sort.append((i, j, data[i, j]))
+                # else:
+                #     data_for_sort.append((i, j, 0)) # exclude from array?
+        # views = [(i, len(matches[i,i+1])) for i in range(2, len(self.poses)-1)]
 
-        data_for_sort = sorted(data_for_sort, key=lambda  x: x[2], reverse=True)
+
+        data_for_sort = sorted(data_for_sort, key=lambda  x: x[1], reverse=False)
 
         available_images = list(range(len(self.poses)))
         # available_images = np.arange(len(self.poses))
@@ -117,7 +125,6 @@ class SFM:
             if self.poses[i] is not None:
                 available_images.remove(i)
                 used_images.append(i)
-
 
         for i, j, ck in data_for_sort:
 
@@ -146,6 +153,22 @@ class SFM:
         # Matches - это множество кортежей (landmark_id, descriptor_id), где:
         # - landmark_id: индекс 3D-точки в self.points
         # - descriptor_id: индекс ключевой точки в изображении i
+
+        start = i - 10
+        end = i + 10 + 1
+        frame_indecies = [j % len(self.poses) for j in range(start, end) if j != i]
+        # for j in range(len(self.poses)):
+        for j in frame_indecies:
+
+            # найти все точки между j-м и i-м изображениями. J сопоставлены с I
+            matches_ji = self.matches[j,i]
+
+            for match_ji in matches_ji:
+                ind_j, ind_i = match_ji
+                landmark_id = self.observations_lookup.get((j, ind_j))
+                if landmark_id is not None:
+                    matches.add((landmark_id, ind_i))
+
 
         landmark_ids = [match[0] for match in matches]
         descriptor_ids = [match[1] for match in matches]
@@ -186,14 +209,15 @@ class SFM:
         for l, d in zip(landmark_ids, descriptor_ids):
             assert(len(self.observations) > l)  # Убеждаемся, что индекс l существует в observations
             self.observations[l].append((i, d))  # Добавляем наблюдение для 3D-точки
-            assert self.observations_lookup.get((i, d)) is None, (i, d)  # Добавляем наблюдение для 3D-точки
+            # assert self.observations_lookup.get((i, d)) is None, (i, d)
             self.observations_lookup[(i, d)] = l  # Обновляем observations_lookup для быстрого доступа
         
         assert(self.check_observations_consisntency()) # Проверка целостности наблюдений
 
         # Триангулируем новые точки для текущего вида, сравнивая его с другими
-        for j in range(len(self.features)):
-            if self.poses[j] is None or i == j:
+        # for j in range(len(self.features)):
+        for j in frame_indecies:
+            if self.poses[j] is None:
                 continue  # Пропускаем, если для изображения j нет позы или оно совпадает с i
             self.trinagulate_points(i, j)  # Триангулируем между изображениями i и j
             assert(self.check_observations_consisntency())  # Проверяем целостность наблюдений после триангуляции
@@ -401,8 +425,8 @@ if __name__ == '__main__':
         features = np.load('features.npy', allow_pickle=True)
 
     if args.recalculate:
-        matches = match_features(features)
-        matches = cross_check(matches)
+        matches = match_features(features) # with base features.py
+        matches = cross_check(matches) # with base features.py
         np.save('matches.npy', matches, allow_pickle=True)
     else:
         print("Loading matches...")
@@ -430,274 +454,3 @@ if __name__ == '__main__':
             f.write(f"{point[0]} {point[1]} {point[2]}\n")
     sfm.visualize()
 
-# from ChatGPT
-"""
-class SFM:
-    # Конструктор класса SFM, инициализирующий начальные данные
-    def __init__(self, features, matches, camera_model, reprojection_threshold):
-        # Сохраняем входные данные
-        self.features = features  # Признаки изображений
-        self.matches = matches  # Соответствия между изображениями
-        self.camera_model = camera_model  # Модель камеры
-        self.reprojection_threshold = reprojection_threshold  # Порог репроекции
-
-        # Инициализация сцены
-        self.poses = [None for _ in range(len(self.features))]  # Позиции камер
-        self.points = []  # Набор 3D-точек
-        self.observations = []  # Наблюдения 3D-точек
-        self.observations_lookup = {}  # Таблица соответствий для наблюдений
-        self.failed = False  # Флаг, сигнализирующий об ошибке в реконструкции
-
-    # Проверка завершения процесса реконструкции
-    def is_finished(self):
-        return self.failed or all([pose is not None for pose in self.poses])
-
-    # Находим пару изображений с наибольшим количеством соответствий для начальной инициализации
-    def find_initial_pair(self):
-        max_i, max_j = -1, -1
-        # TODO: Выберите пару изображений для начальной реконструкции
-        print(f"Initial pair: {max_i} {max_j}")
-        return max_i, max_j 
-
-    # Инициализация начальной пары изображений и построение 3D-точек
-    def initialize(self):
-        max_i, max_j = self.find_initial_pair()
-        T, points, kp_id1, kp_id2 = two_view_geometry(
-            self.features[max_i][0], self.features[max_j][0],
-            self.matches[max_i][max_j], self.reprojection_threshold)
-
-        self.poses[max_i] = np.eye(4)  # Положение первой камеры
-        self.poses[max_j] = T  # Положение второй камеры
-        self.points = points  # Инициализируем 3D-точки
-
-        # Добавляем наблюдения 3D-точек
-        self.observations = [[(max_i, i), (max_j, j)] for i, j in zip(kp_id1, kp_id2)]
-        
-        # Добавляем наблюдения в таблицу соответствий
-        for i, obs in enumerate(self.observations):
-            for j in obs:
-                self.observations_lookup[j] = i
-        print(f"Initialized with {len(points)} points")
-
-    # Сортируем виды по количеству наблюдений для 3D-точек
-    def sort_views(self):
-        views = []
-        # TODO: Вернуть список изображений по вероятности успешного добавления в сцену
-        views.sort(key=lambda x: x[1], reverse=True)
-        return views
-
-    # Добавляем новый вид (изображение) в сцену
-    def add_view(self, i):
-        print(f"Adding view {i}")
-        matches = set()
-        # TODO: Найти общие точки между изображением i и существующими точками
-
-        landmark_ids = [match[0] for match in matches]
-        descriptor_ids = [match[1] for match in matches]
-
-        # Проверка достаточности общих точек для построения вида
-        if len(landmark_ids) < 10:
-            print('Not enough points in common')
-            return False
-
-        # Позиционируем камеру для текущего изображения
-        T, landmark_ids, descriptor_ids = solve_pnp(
-            self.points, landmark_ids, self.features[i][0], descriptor_ids,
-            self.reprojection_threshold)
-        
-        if T is None:
-            print("Failed to add view")
-            return False
-
-        # Очищаем дескрипторы, сопоставленные с несколькими 3D-точками
-        descriptor_count = {d: descriptor_ids.count(d) for d in descriptor_ids}
-        landmark_ids = [landmark_ids[j] for j, d in enumerate(descriptor_ids) if descriptor_count[d] == 1]
-        descriptor_ids = [d for d in descriptor_ids if descriptor_count[d] == 1]
-
-        self.poses[i] = T  # Положение камеры
-
-        # Добавляем наблюдения
-        for l, d in zip(landmark_ids, descriptor_ids):
-            self.observations[l].append((i, d))
-            self.observations_lookup[(i, d)] = l
-
-        # Триангулируем новые точки для текущего вида
-        for j in range(len(self.features)):
-            if self.poses[j] is None or i == j:
-                continue
-            self.trinagulate_points(i, j)
-        print(f"Scene has {len(self.points)} points")
-
-        return True
-
-    # Триангулируем точки между двумя видами
-    def trinagulate_points(self, i, j):
-        matches = self.matches[i][j]
-        if len(matches) < 50:
-            return
-        descriptors_i, descriptors_j = [], []
-        
-        for match in matches:
-            if not self.observations_lookup.get((i, match[0])) and not self.observations_lookup.get((j, match[1])):
-                descriptors_i.append(match[0])
-                descriptors_j.append(match[1])
-
-        if len(descriptors_i) < 10:
-            return
-
-        points, inliers = triangulate_points(
-            descriptors_i, descriptors_j, self.poses[i], self.poses[j],
-            self.reprojection_threshold)
-
-        # Добавляем триангулированные точки в сцену
-        self.points = np.vstack((self.points, points[inliers]))
-        for d_i, d_j in zip(descriptors_i[inliers], descriptors_j[inliers]):
-            self.observations.append([(i, d_i), (j, d_j)])
-            self.observations_lookup[(i, d_i)] = len(self.observations) - 1
-            self.observations_lookup[(j, d_j)] = len(self.observations) - 1
-
-    # Добавляем следующий вид (изображение) в сцену
-    def add_next_view(self):
-        views = self.sort_views()
-        for view in views:
-            if self.add_view(view[0]):
-                return
-        print("Failed to add a view")
-        self.failed = True
-
-    # Визуализация сцены
-    def visualize(self):
-        draw_scene(self.poses, self.points, self.camera_model)
-
-    # Проверка на согласованность наблюдений
-    def check_observations_consisntency(self):
-        for i, obs in enumerate(self.observations):
-            for j in obs:
-                if self.observations_lookup.get(j) != i:
-                    return False
-        for i, obs in self.observations_lookup.items():
-            if i not in self.observations[obs]:
-                return False
-        return len(self.points) == len(self.observations)
-
-    # Корректировка с помощью bundle adjustment
-    def bundle_adjustment(self):
-        bundle_adjustment(self.poses, self.points, self.features, self.observations, self.reprojection_threshold)
-        self.filter_outliers()
-
-    # Фильтруем выбросы по репроекционной ошибке
-    def filter_outliers(self):
-        observations_deleted = 0
-        for i, obs in enumerate(self.observations):
-            for j in obs:
-                point = self.points[i]
-                pose = self.poses[j[0]]
-                point = pose @ np.hstack((point, 1))
-                point /= point[2]
-                error = np.linalg.norm(point[:2] - self.features[j[0]][0][j[1]])
-                if error > self.reprojection_threshold:
-                    self.observations_lookup.pop(j)
-                    self.observations[i].remove(j)
-                    observations_deleted += 1
-        print(f"Filtered {observations_deleted} observations")
-
-        # Удаляем точки с менее чем двумя наблюдениями
-        to_delete = {i for i, obs in enumerate(self.observations) if len(obs) < 2}
-        self.points = np.delete(self.points, list(to_delete), axis=0)
-        self.observations = [obs for i, obs in enumerate(self.observations) if i not in to_delete]
-
-
-
-import argparse  # Импорт argparse для работы с аргументами командной строки
-import os  # Модуль для работы с файловой системой
-import numpy as np  # Импортируем numpy для работы с массивами
-from sfm_module import parse_camera_model, get_image_files, load_images, extract_features, match_features, cross_check, SFM
-
-# Основная функция программы
-if __name__ == '__main__':
-    # Парсинг аргументов командной строки
-    parser = argparse.ArgumentParser(description='Simple Structure-from-Motion (SfM) pipeline')
-    parser.add_argument('--input', type=str, help='input folder with images')
-    parser.add_argument('--camera_model', type=str, help='camera model parameters', default='SIMPLE_RADIAL 3072 2304 2559.68 1536 1152 -0.0204997')
-    parser.add_argument('--max_views', type=int, help='maximum number of views to process', default=-1)
-    parser.add_argument('--shuffle', action='store_true', help='shuffle image files before processing')
-    parser.add_argument('--resize_factor', type=float, help='factor to resize images', default=1.0)
-    parser.add_argument('--num_features', type=int, help='number of features to detect per image', default=10000)
-    parser.add_argument('--recalculate', action='store_true', help='recalculate features and matches')
-    parser.add_argument('--reprojection_threshold', type=float, help='reprojection threshold for filtering', default=1e-3)
-    parser.add_argument('--ba_frequency', type=int, help='bundle adjustment frequency (iterations)', default=5)
-    parser.add_argument('--vis_frequency', type=int, help='visualization frequency (iterations)', default=5)
-    args = parser.parse_args()
-
-    # Загрузка модели камеры
-    camera_model = parse_camera_model(args.camera_model)
-    if args.resize_factor != 1.0:
-        camera_model.resize(args.resize_factor)  # Масштабируем камеру, если задан resize_factor
-    print(camera_model)
-
-    # Перепроверка необходимости пересчета фич и соответствий
-    if not args.recalculate and (not os.path.exists('features.npy') or not os.path.exists('matches.npy')):
-        args.recalculate = True
-
-    # Сохранение аргументов в файл
-    with open('args.txt', 'w') as f:
-        f.write(str(args) + '\n')
-
-    # Загрузка изображений
-    if args.recalculate:
-        files = get_image_files(args.input, args.max_views, args.shuffle)  # Получаем список изображений
-        with open('image_names.txt', 'w') as f:
-            for file in files:
-                f.write(file + '\n')
-        images = load_images(files, args.resize_factor)  # Загружаем изображения
-    else:
-        files = [line.rstrip('\n') for line in open('image_names.txt')]
-
-    # Извлечение признаков
-    if args.recalculate:
-        features = extract_features(images, args.num_features)
-        # Проекция признаков в координаты камеры
-        for i in range(len(features)):
-            features[i][0] = camera_model.unproject(features[i][0])
-        np.save('features.npy', features, allow_pickle=True)  # Сохраняем извлеченные признаки
-    else:
-        print("Loading features...")
-        features = np.load('features.npy', allow_pickle=True)
-
-    # Сопоставление признаков
-    if args.recalculate:
-        matches = match_features(features)
-        matches = cross_check(matches)  # Проверка соответствий на перекрестную согласованность
-        np.save('matches.npy', matches, allow_pickle=True)
-    else:
-        print("Loading matches...")
-        matches = np.load('matches.npy', allow_pickle=True)
-
-    # Инициализация и выполнение SfM
-    sfm = SFM(features, matches, camera_model, args.reprojection_threshold)
-    sfm.initialize()
-    assert sfm.check_observations_consisntency(), "Observations are inconsistent"
-
-    if args.vis_frequency:
-        sfm.visualize()  # Визуализация начальной сцены
-
-    iteration = 0
-    while not sfm.is_finished():
-        sfm.add_next_view()
-        assert sfm.check_observations_consisntency(), "Observations are inconsistent after adding new view"
-        iteration += 1
-        if iteration % args.ba_frequency == 0:
-            sfm.bundle_adjustment()  # Корректировка по пакетам (bundle adjustment)
-        if args.vis_frequency > 0 and iteration % args.vis_frequency == 0:
-            sfm.visualize()  # Визуализация сцены
-
-    print("\n\nFINISHED\n\n")
-
-    # Сохранение облака точек в файл
-    with open('pointcloud.xyz', 'w') as f:
-        for point in sfm.points:
-            f.write(f"{point[0]} {point[1]} {point[2]}\n")
-    
-    sfm.visualize()  # Финальная визуализация
-
-"""
