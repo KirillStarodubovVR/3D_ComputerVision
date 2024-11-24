@@ -4,12 +4,8 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="8eb969c1-0dec-4f8f-902a-8ac87f082076" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/detection_3d/detection.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/3D_ComputerVision.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/3D_ComputerVision.iml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_11_8_2024_5_34_PM_[Changes]/shelved.patch" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_11_8_2024_5_34_PM__Changes_.xml" beforeDir="false" />
+    <list default="true" id="8eb969c1-0dec-4f8f-902a-8ac87f082076" name="Changes" comment="update third homework">
+      <change afterPath="$PROJECT_DIR$/segmentation_3d/3d_segmentation.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -48,20 +44,43 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;Python.detection.executor&quot;: &quot;Debug&quot;,
-    &quot;Python.main.executor&quot;: &quot;Run&quot;,
-    &quot;Python.my_hw_2.executor&quot;: &quot;Debug&quot;,
-    &quot;Python.slam.executor&quot;: &quot;Debug&quot;,
-    &quot;Python.test.executor&quot;: &quot;Run&quot;,
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;master&quot;,
-    &quot;last_opened_file_path&quot;: &quot;/home/skg/Projects/3D_ComputerVision&quot;,
-    &quot;settings.editor.selected.configurable&quot;: &quot;com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "Python.3d_segmentation.executor": "Debug",
+    "Python.detection.executor": "Debug",
+    "Python.main.executor": "Run",
+    "Python.my_hw_2.executor": "Debug",
+    "Python.slam.executor": "Debug",
+    "Python.test.executor": "Run",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "git-widget-placeholder": "master",
+    "last_opened_file_path": "/home/skg/Projects/3D_ComputerVision",
+    "settings.editor.selected.configurable": "com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable"
   }
-}</component>
-  <component name="RunManager" selected="Python.detection">
+}]]></component>
+  <component name="RunManager" selected="Python.3d_segmentation">
+    <configuration name="3d_segmentation" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
+      <module name="3D_ComputerVision" />
+      <option name="ENV_FILES" value="" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/segmentation_3d" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/segmentation_3d/3d_segmentation.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
     <configuration name="detection" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
       <module name="3D_ComputerVision" />
       <option name="ENV_FILES" value="" />
@@ -174,6 +193,7 @@
     </configuration>
     <recent_temporary>
       <list>
+        <item itemvalue="Python.3d_segmentation" />
         <item itemvalue="Python.detection" />
         <item itemvalue="Python.slam" />
         <item itemvalue="Python.my_hw_2" />
@@ -245,7 +265,15 @@
       <option name="project" value="LOCAL" />
       <updated>1730803366480</updated>
     </task>
-    <option name="localTasksCounter" value="7" />
+    <task id="LOCAL-00007" summary="update third homework">
+      <option name="closed" value="true" />
+      <created>1732471778878</created>
+      <option name="number" value="00007" />
+      <option name="presentableId" value="LOCAL-00007" />
+      <option name="project" value="LOCAL" />
+      <updated>1732471778878</updated>
+    </task>
+    <option name="localTasksCounter" value="8" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -315,7 +343,17 @@
           <line>157</line>
           <option name="timeStamp" value="35" />
         </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/segmentation_3d/3d_segmentation.py</url>
+          <line>13</line>
+          <option name="timeStamp" value="36" />
+        </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>
+    <watches-manager>
+      <configuration name="PythonConfigurationType">
+        <watch expression="df_mapping" />
+      </configuration>
+    </watches-manager>
   </component>
 </project>
