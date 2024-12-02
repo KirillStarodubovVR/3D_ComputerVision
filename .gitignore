@@ -10,4 +10,9 @@ camera_model_and_calibration/homework/images_calibration3/
 *.zip
 *.mkv
 *.npy
+*.pkl
 images/
+
+/detection_3d/detection_venv
+/segmentation_3d/testing
+/segmentation_3d/training

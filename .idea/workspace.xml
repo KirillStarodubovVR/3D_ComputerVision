@@ -4,9 +4,9 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="8eb969c1-0dec-4f8f-902a-8ac87f082076" name="Changes" comment="update third homework">
-      <change afterPath="$PROJECT_DIR$/segmentation_3d/3d_segmentation.py" afterDir="false" />
+    <list default="true" id="8eb969c1-0dec-4f8f-902a-8ac87f082076" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/segmentation_3d/3d_segmentation.py" beforeDir="false" afterPath="$PROJECT_DIR$/segmentation_3d/3d_segmentation.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -44,20 +44,21 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "Python.3d_segmentation.executor": "Debug",
-    "Python.detection.executor": "Debug",
-    "Python.main.executor": "Run",
-    "Python.my_hw_2.executor": "Debug",
-    "Python.slam.executor": "Debug",
-    "Python.test.executor": "Run",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "git-widget-placeholder": "master",
-    "last_opened_file_path": "/home/skg/Projects/3D_ComputerVision",
-    "settings.editor.selected.configurable": "com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;Python.3d_segmentation.executor&quot;: &quot;Debug&quot;,
+    &quot;Python.detection.executor&quot;: &quot;Debug&quot;,
+    &quot;Python.main.executor&quot;: &quot;Run&quot;,
+    &quot;Python.my_hw_2.executor&quot;: &quot;Debug&quot;,
+    &quot;Python.slam.executor&quot;: &quot;Debug&quot;,
+    &quot;Python.test.executor&quot;: &quot;Run&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;master&quot;,
+    &quot;ignore.virus.scanning.warn.message&quot;: &quot;true&quot;,
+    &quot;last_opened_file_path&quot;: &quot;/home/skg/Projects/3D_ComputerVision&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable&quot;
   }
-}]]></component>
+}</component>
   <component name="RunManager" selected="Python.3d_segmentation">
     <configuration name="3d_segmentation" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
       <module name="3D_ComputerVision" />
@@ -273,7 +274,15 @@
       <option name="project" value="LOCAL" />
       <updated>1732471778878</updated>
     </task>
-    <option name="localTasksCounter" value="8" />
+    <task id="LOCAL-00008" summary="Added new data for 3d segmentation">
+      <option name="closed" value="true" />
+      <created>1732472948792</created>
+      <option name="number" value="00008" />
+      <option name="presentableId" value="LOCAL-00008" />
+      <option name="project" value="LOCAL" />
+      <updated>1732472948792</updated>
+    </task>
+    <option name="localTasksCounter" value="9" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -294,7 +303,8 @@
     <MESSAGE value="finish homework" />
     <MESSAGE value="added scaling of keypoint coordinates" />
     <MESSAGE value="update third homework" />
-    <option name="LAST_COMMIT_MESSAGE" value="update third homework" />
+    <MESSAGE value="Added new data for 3d segmentation" />
+    <option name="LAST_COMMIT_MESSAGE" value="Added new data for 3d segmentation" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -345,15 +355,20 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/segmentation_3d/3d_segmentation.py</url>
-          <line>13</line>
-          <option name="timeStamp" value="36" />
+          <line>620</line>
+          <option name="timeStamp" value="80" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/segmentation_3d/3d_segmentation.py</url>
+          <line>337</line>
+          <option name="timeStamp" value="83" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/segmentation_3d/3d_segmentation.py</url>
+          <line>593</line>
+          <option name="timeStamp" value="84" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>
-    <watches-manager>
-      <configuration name="PythonConfigurationType">
-        <watch expression="df_mapping" />
-      </configuration>
-    </watches-manager>
   </component>
 </project>

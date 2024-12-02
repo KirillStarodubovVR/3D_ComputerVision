@@ -1,0 +1,6 @@
+numpy==1.23.5
+torch
+matplotlib
+plotly
+open3d
+
