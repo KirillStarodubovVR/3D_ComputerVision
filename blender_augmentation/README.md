@@ -130,8 +130,7 @@ if distance < 10:
 
 ```
 
-Finally the dataset is written to [annotations.json](/models/annotations.json) and could be downloaded from google disk [dataset](https://drive.google.com/file/d/18JJr63nYXIqudbS7aU2BBIij8ImcNRbX/view?usp=sharing)
-
+Finally the dataset is written to [annotations.json](/models/annotations.json) and could be downloaded from google disk with images and labels [dataset](https://drive.google.com/file/d/1b1BQyh1hoQ584iUyXeAkX7W9Ap8gzRXq/view?usp=sharing)
 
 To check labels after preprocessing the code in the end of [bbox_creator](bbox_creator.ipynb) could be used.
 
