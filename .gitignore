@@ -5,9 +5,11 @@ camera_model_and_calibration/homework/images_calibration/
 camera_model_and_calibration/homework/images_calibration2/
 camera_model_and_calibration/homework/images_calibration3/
 
+
 blender_augmentation/models/data/labels/
-
-
+blender_augmentation/models/data/images/
+blender_augmentation/models/data/dataset/dataset_roboflow/*
+blender_augmentation/models/data/dataset/*
 
 *.blend
 *.blend1

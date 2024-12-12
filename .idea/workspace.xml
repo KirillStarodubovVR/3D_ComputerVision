@@ -5,7 +5,10 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="8eb969c1-0dec-4f8f-902a-8ac87f082076" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/test.ipynb" beforeDir="false" afterPath="$PROJECT_DIR$/test.ipynb" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/blender_augmentation/bbox_creator.ipynb" beforeDir="false" afterPath="$PROJECT_DIR$/blender_augmentation/bbox_creator.ipynb" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/blender_augmentation/image.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/blender_augmentation/models/annotations.json" beforeDir="false" afterPath="$PROJECT_DIR$/blender_augmentation/models/annotations.json" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
