@@ -130,7 +130,7 @@ if distance < 10:
 
 ```
 
-Finally the dataset is written to [annotations.json](/models/annotations.json) and could be downloaded from google disk with images and labels [dataset](https://drive.google.com/file/d/1b1BQyh1hoQ584iUyXeAkX7W9Ap8gzRXq/view?usp=sharing)
+Finally the dataset is written to [annotations.json](/models/annotations.json) and could be downloaded from google disk with images and labels [dataset](https://drive.google.com/file/d/1AC_F_T0-y_GM1RcIYGwcAOgCb_NrSfcu/view?usp=drive_link)
 
 To check labels after preprocessing the code in the end of [bbox_creator](bbox_creator.ipynb) could be used.
 
@@ -165,4 +165,88 @@ plt.show()
 ![image](./models/report/bbox_stop_sign.png)
 
 
-Обучение модели на датасете с помощью mmdetection в процессе. Столкнулся с проблемой установки необходимых библиотек **mmcv**.
+[YOLOv9](https://docs.ultralytics.com/ru/models/yolov9) was chosen for training on this dataset. https://github.com/ultralytics/yolov3/issues/102
+
+Training dataset should has next structure
+
+Here's a recommended dataset structure for training a YOLOv9 model:  
+
+### **Dataset Directory Structure:**  
+```
+/dataset
+    /train
+        /images
+            image1.jpg
+            image2.jpg
+        /labels
+            image1.txt
+            image2.txt
+    /valid
+        /images
+            image3.jpg
+            image4.jpg
+        /labels
+            image3.txt
+            image4.txt
+    /test (optional)
+        /images
+            image5.jpg
+            image6.jpg
+        /labels (optional)
+            image5.txt
+            image6.txt
+    data.yaml
+```
+
+---
+
+### **1. File Descriptions:**  
+
+1. **Images Folder (`/images`)**: Contains training, validation, and optional test images in formats like `.jpg` or `.png`.  
+
+2. **Labels Folder (`/labels`)**: Contains corresponding annotation files for each image in YOLO format (`image_name.txt`).  
+   - Format:  
+     ```
+     <class_id> <x_center> <y_center> <width> <height>
+     ```
+   - All values are normalized between 0 and 1.  
+
+3. **Data Configuration File (`data.yaml`)**: Describes the dataset.  
+
+---
+
+### **2. Example `data.yaml`:**
+```yaml
+# YOLOv9 dataset configuration
+train: ./train/images
+val: ./valid/images
+test: ./test/images  # Optional
+
+nc: 3  # Number of classes
+names: ["class1", "class2", "class3"]
+```
+
+---
+
+### **3. Sample Label File (`image1.txt`):**
+```
+0 0.45 0.55 0.2 0.3
+1 0.5 0.4 0.1 0.15
+```
+
+---
+
+Train parameters:
+1. **batch** = 16 
+2. **epochs** = 150
+3. **img** = 640 Target image size for training. All images are resized to this dimension before being fed into the model. Affects model accuracy and computational complexity. 
+4. **device** = 0 
+5. **min-items** = 0 
+6. **close-mosaic** = 15
+7. **single-cls** = True
+
+Training results:
+![image](./models/report/training_results.png)
+
+Prediction examples
+![image](./models/report/prediction.png)
